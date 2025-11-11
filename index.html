@@ -7,6 +7,15 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="shortcut icon" href="img/logo.jpeg" type="image/x-icon">
   <style>
+    .product-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
     .product-card img {
       height: 200px;
       object-fit: cover;
@@ -15,31 +24,208 @@
       position: absolute;
       top: 10px;
       left: 10px;
+      z-index: 10;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.75rem;
+    }
+    .badge-new {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.75rem;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .price-section {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .original-price {
+      text-decoration: line-through;
+      color: #999;
+      font-size: 0.9rem;
+    }
+    .sale-price {
+      color: #dc3545;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .cart-toggle-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #0d6efd;
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .cart-toggle-btn:hover {
+      transform: scale(1.1);
+      background: #0b5ed7;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #dc3545;
+      color: white;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .cart-sidebar {
+      position: fixed;
+      right: -400px;
+      top: 0;
+      width: 400px;
+      height: 100vh;
+      background: white;
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-sidebar.open {
+      right: 0;
+    }
+    .cart-header {
+      background: #0d6efd;
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .cart-items {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    .cart-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .cart-item-info {
+      flex: 1;
+    }
+    .cart-item-name {
+      font-weight: bold;
+      margin-bottom: 0.3rem;
+    }
+    .cart-item-price {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    .cart-item-qty {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .qty-btn {
+      background: #f0f0f0;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+    .qty-btn:hover {
+      background: #e0e0e0;
+    }
+    .remove-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .remove-btn:hover {
+      background: #c82333;
+    }
+    .cart-footer {
+      padding: 1.5rem;
+      border-top: 2px solid #eee;
+      background: #f8f9fa;
+    }
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .checkout-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .checkout-btn:hover {
+      background: #218838;
+    }
+    .checkout-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .empty-cart-msg {
+      text-align: center;
+      color: #999;
+      padding: 2rem;
     }
   </style>
 </head>
 <body>
-
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Khup Commerce</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <form class="d-flex ms-auto me-3">
-          <input class="form-control me-2" type="search" placeholder="Search products..." />
-          <button class="btn btn-outline-light" type="submit">Search</button>
-        </form>
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Shop</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Cart 🛒</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
 
   <!-- Hero Banner -->
   <header class="bg-primary text-white text-center py-5">
@@ -49,22 +235,262 @@
 
   <!-- Product Grid -->
   <section class="container my-5">
-    <div class="row g-4">
-      <!-- Product Card -->
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="card product-card position-relative">
-          <span class="badge bg-danger badge-sale">Sale</span>
-          <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Product" />
-          <div class="card-body">
-            <h5 class="card-title">Product Name</h5>
-            <p class="card-text text-muted">$29.99</p>
-            <a href="#" class="btn btn-primary w-100">Add to Cart</a>
+    <h2 class="mb-4 text-center">Featured Products</h2>
+    <div class="product-grid">
+      <!-- Product 1 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-danger badge-sale">-30%</span>
+        <img src="img/airpod.jpg" class="card-img-top" alt="Wireless Headphones" />
+        <div class="card-body">
+          <h5 class="card-title">Wireless Headphones</h5>
+          <p class="card-text text-muted">Premium audio quality</p>
+          <div class="price-section">
+            <span class="original-price">$89.99</span>
+            <span class="sale-price">$62.99</span>
           </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
         </div>
       </div>
-      <!-- Duplicate above block for more products -->
+
+      <!-- Product 2 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-success badge-new">New</span>
+        <img src="img/audio.jpg" class="card-img-top" alt="Audio Speaker" />
+        <div class="card-body">
+          <h5 class="card-title">Audio Speaker</h5>
+          <p class="card-text text-muted">Premium sound experience</p>
+          <div class="price-section">
+            <span class="sale-price">$199.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-danger badge-sale">-25%</span>
+        <img src="img/cam.jpg" class="card-img-top" alt="Camera" />
+        <div class="card-body">
+          <h5 class="card-title">Camera</h5>
+          <p class="card-text text-muted">Professional quality imaging</p>
+          <div class="price-section">
+            <span class="original-price">$79.99</span>
+            <span class="sale-price">$59.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="card product-card position-relative">
+        <img src="img/camSt.jpeg" class="card-img-top" alt="Camera Stand" />
+        <div class="card-body">
+          <h5 class="card-title">Camera Stand</h5>
+          <p class="card-text text-muted">Stable & adjustable</p>
+          <div class="price-section">
+            <span class="sale-price">$19.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 5 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-danger badge-sale">-15%</span>
+        <img src="img/case.png" class="card-img-top" alt="Phone Case" />
+        <div class="card-body">
+          <h5 class="card-title">Premium Phone Case</h5>
+          <p class="card-text text-muted">Drop protection</p>
+          <div class="price-section">
+            <span class="original-price">$24.99</span>
+            <span class="sale-price">$21.24</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-success badge-new">New</span>
+        <img src="img/charger.jpeg" class="card-img-top" alt="Wireless Charger" />
+        <div class="card-body">
+          <h5 class="card-title">Wireless Charger</h5>
+          <p class="card-text text-muted">Fast charging pad</p>
+          <div class="price-section">
+            <span class="sale-price">$34.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 7 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-danger badge-sale">-40%</span>
+        <img src="img/ip.jpeg" class="card-img-top" alt="iPad" />
+        <div class="card-body">
+          <h5 class="card-title">iPad</h5>
+          <p class="card-text text-muted">Portable tablet device</p>
+          <div class="price-section">
+            <span class="original-price">$15.99</span>
+            <span class="sale-price">$9.59</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 8 -->
+      <div class="card product-card position-relative">
+        <img src="img/macbook.jpg" class="card-img-top" alt="MacBook" />
+        <div class="card-body">
+          <h5 class="card-title">MacBook</h5>
+          <p class="card-text text-muted">Powerful laptop for professionals</p>
+          <div class="price-section">
+            <span class="sale-price">$45.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 9 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-success badge-new">New</span>
+        <img src="img/popCase.jpg" class="card-img-top" alt="Pop Case" />
+        <div class="card-body">
+          <h5 class="card-title">Pop Case</h5>
+          <p class="card-text text-muted">Stylish phone protection</p>
+          <div class="price-section">
+            <span class="sale-price">$69.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 10 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-danger badge-sale">-35%</span>
+        <img src="img/airpod.jpg" class="card-img-top" alt="Wireless Earbuds" />
+        <div class="card-body">
+          <h5 class="card-title">Wireless Earbuds</h5>
+          <p class="card-text text-muted">Bluetooth in-ear earbuds</p>
+          <div class="price-section">
+            <span class="original-price">$129.99</span>
+            <span class="sale-price">$84.49</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 11 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-success badge-new">New</span>
+        <img src="img/audio.jpg" class="card-img-top" alt="Portable Bluetooth Speaker" />
+        <div class="card-body">
+          <h5 class="card-title">Portable Bluetooth Speaker</h5>
+          <p class="card-text text-muted">Rich bass, 12h battery</p>
+          <div class="price-section">
+            <span class="sale-price">$59.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 12 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-danger badge-sale">-20%</span>
+        <img src="img/cam.jpg" class="card-img-top" alt="Digital Camera" />
+        <div class="card-body">
+          <h5 class="card-title">Digital Camera</h5>
+          <p class="card-text text-muted">1080p HD recording</p>
+          <div class="price-section">
+            <span class="original-price">$49.99</span>
+            <span class="sale-price">$39.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 13 -->
+      <div class="card product-card position-relative">
+        <img src="img/camSt.jpeg" class="card-img-top" alt="Camera Tripod Stand" />
+        <div class="card-body">
+          <h5 class="card-title">Camera Tripod Stand</h5>
+          <p class="card-text text-muted">Adjustable height & angle</p>
+          <div class="price-section">
+            <span class="sale-price">$49.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 14 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-danger badge-sale">-50%</span>
+        <img src="img/case.png" class="card-img-top" alt="Protective Phone Case" />
+        <div class="card-body">
+          <h5 class="card-title">Protective Phone Case</h5>
+          <p class="card-text text-muted">Shock-absorbent protection</p>
+          <div class="price-section">
+            <span class="original-price">$39.99</span>
+            <span class="sale-price">$19.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 15 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-success badge-new">New</span>
+        <img src="img/charger.jpeg" class="card-img-top" alt="MagSafe Wireless Charger" />
+        <div class="card-body">
+          <h5 class="card-title">MagSafe Wireless Charger</h5>
+          <p class="card-text text-muted">Fast charging pad</p>
+          <div class="price-section">
+            <span class="sale-price">$14.99</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- Product 16 -->
+      <div class="card product-card position-relative">
+        <span class="badge bg-danger badge-sale">-12%</span>
+        <img src="img/macbook.jpg" class="card-img-top" alt="MacBook Air 13-inch" />
+        <div class="card-body">
+          <h5 class="card-title">MacBook Air 13-inch</h5>
+          <p class="card-text text-muted">M-series performance</p>
+          <div class="price-section">
+            <span class="original-price">$54.99</span>
+            <span class="sale-price">$48.39</span>
+          </div>
+          <button class="btn btn-primary w-100 mt-2">Add to Cart</button>
+        </div>
+      </div>
     </div>
   </section>
+
+  <!-- Cart Toggle Button -->
+  <button class="cart-toggle-btn" id="cartToggleBtn">
+    🛒
+    <span class="cart-badge" id="cartBadge">0</span>
+  </button>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h3 style="margin: 0;">Shopping Cart</h3>
+      <button class="cart-close-btn" id="cartCloseBtn">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="empty-cart-msg">Your cart is empty</div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span id="cartTotal">$0.00</span>
+      </div>
+      <button class="checkout-btn" id="checkoutBtn" disabled>Proceed to Checkout</button>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="bg-dark text-white text-center py-4">
@@ -72,5 +498,127 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+  <script>
+    let cart = [];
+
+    // Cart Toggle
+    const cartToggleBtn = document.getElementById('cartToggleBtn');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const cartCloseBtn = document.getElementById('cartCloseBtn');
+
+    cartToggleBtn.addEventListener('click', () => {
+      cartSidebar.classList.toggle('open');
+    });
+
+    cartCloseBtn.addEventListener('click', () => {
+      cartSidebar.classList.remove('open');
+    });
+
+    // Close cart when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!cartSidebar.contains(e.target) && !cartToggleBtn.contains(e.target)) {
+        cartSidebar.classList.remove('open');
+      }
+    });
+
+    // Add to Cart functionality
+    const addToCartButtons = document.querySelectorAll('.btn-primary');
+    
+    addToCartButtons.forEach((button, index) => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const card = this.closest('.product-card');
+        const title = card.querySelector('.card-title').textContent;
+        const priceText = card.querySelector('.sale-price').textContent;
+        const price = parseFloat(priceText.replace('$', ''));
+        const img = card.querySelector('img').src;
+
+        // Check if item already exists in cart
+        const existingItem = cart.find(item => item.title === title);
+        
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push({
+            title,
+            price,
+            img,
+            quantity: 1,
+            id: Date.now() + Math.random()
+          });
+        }
+
+        updateCart();
+        cartSidebar.classList.add('open');
+      });
+    });
+
+    function updateCart() {
+      const cartItemsContainer = document.getElementById('cartItems');
+      const cartBadge = document.getElementById('cartBadge');
+      const cartTotal = document.getElementById('cartTotal');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      // Update badge
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartBadge.textContent = totalItems;
+
+      // Update cart items display
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<div class="empty-cart-msg">Your cart is empty</div>';
+        checkoutBtn.disabled = true;
+      } else {
+        cartItemsContainer.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <img src="${item.img}" alt="${item.title}">
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.title}</div>
+              <div class="cart-item-price">${item.price.toFixed(2)}</div>
+              <div class="cart-item-qty">
+                <button class="qty-btn" onclick="updateQuantity('${item.id}', -1)">−</button>
+                <span>${item.quantity}</span>
+                <button class="qty-btn" onclick="updateQuantity('${item.id}', 1)">+</button>
+              </div>
+            </div>
+            <button class="remove-btn" onclick="removeFromCart('${item.id}')">Remove</button>
+          </div>
+        `).join('');
+        checkoutBtn.disabled = false;
+      }
+
+      // Update total
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      cartTotal.textContent = '$' + total.toFixed(2);
+    }
+
+    function updateQuantity(id, change) {
+      const item = cart.find(item => item.id == id);
+      if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) {
+          removeFromCart(id);
+        } else {
+          updateCart();
+        }
+      }
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id != id);
+      updateCart();
+    }
+
+    // Checkout functionality
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      if (cart.length === 0) return;
+      
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const itemsList = cart.map(item => `${item.quantity}x ${item.title}`).join(', ');
+      
+      alert(`✅ Order Placed Successfully!\n\nItems: ${itemsList}\n\nTotal: $${total.toFixed(2)}\n\nThank you for your purchase!`);
+      
+      cart = [];
+      updateCart();
+      cartSidebar.classList.remove('open');
+    });
+  </script>
